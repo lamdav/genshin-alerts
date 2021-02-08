@@ -1,0 +1,6 @@
+delay: "number seconds to delay checks"
+notifiers:
+  - name: discord
+    params:
+      token: "discord token"
+      destination: "discord channel"
