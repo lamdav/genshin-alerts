@@ -18,7 +18,12 @@ def cli():
     pass
 
 
-@click.option("--config", help="path to config", type=click.Path(exists=True, file_okay=True, dir_okay=False), default="./config.yaml")
+@click.option(
+    "--config",
+    help="path to config",
+    type=click.Path(exists=True, file_okay=True, dir_okay=False),
+    default="./config.yaml",
+)
 @cli.command()
 def start(config: str):
     config_path = pathlib.Path(config)

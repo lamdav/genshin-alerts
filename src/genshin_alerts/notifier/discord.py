@@ -9,7 +9,9 @@ from genshin_alerts.notifier.base import Notifier
 logger = logging.getLogger("discord")
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler(stream=sys.stdout)
-handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s"))
+handler.setFormatter(
+    logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s")
+)
 logger.addHandler(handler)
 
 
@@ -34,7 +36,9 @@ class DiscordNotifier(Notifier):
         await self.client.wait_until_ready()
 
         if notifier_input.method == "channel":
-            return await self.notify_by_channel(self.destination, notifier_input.message)
+            return await self.notify_by_channel(
+                self.destination, notifier_input.message
+            )
         raise ValueError(f"unsupported notifier method: {notifier_input.method}")
 
     async def notify_by_channel(self, channel_id: int, message: str):

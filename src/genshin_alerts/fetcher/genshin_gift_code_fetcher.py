@@ -16,4 +16,3 @@ class GenshinGiftCodeFetcher(Fetcher):
             response = await client.get(self.extractor.source())
 
         return await self.extractor.extract(response.text)
-

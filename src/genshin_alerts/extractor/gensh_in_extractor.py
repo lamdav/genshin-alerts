@@ -10,6 +10,7 @@ from genshin_alerts.model import GiftEntry
 
 logger = structlog.get_logger()
 
+
 class GenshiINExtractor(Extractor):
     def __init__(self, url: str = "https://www.gensh.in/events/promotion-codes"):
         validators.url(url)
@@ -17,7 +18,9 @@ class GenshiINExtractor(Extractor):
 
     async def extract(self, data: Any) -> Iterable[GiftEntry]:
         if not isinstance(data, str):
-            raise ValueError(f"Gensh.in Extractor does not support extracting from non-string sources: {type(data)}")
+            raise ValueError(
+                f"Gensh.in Extractor does not support extracting from non-string sources: {type(data)}"
+            )
 
         data: str
         soup = BeautifulSoup(data, "html.parser")
@@ -26,7 +29,9 @@ class GenshiINExtractor(Extractor):
         columns = [column.text.strip() for column in table.find_all("td")]
 
         gift_entries = []
-        for chunk in self.n_chunks(zip(itertools.cycle(headers), columns), len(headers)):
+        for chunk in self.n_chunks(
+            zip(itertools.cycle(headers), columns), len(headers)
+        ):
             chunk_dict = dict(chunk)
             try:
                 expired = chunk_dict.get("expired", None)
@@ -46,7 +51,9 @@ class GenshiINExtractor(Extractor):
         return self.url
 
     @staticmethod
-    def n_chunks(iterator: Iterable[Any], chunk_size) -> Generator[List[Any], None, None]:
+    def n_chunks(
+        iterator: Iterable[Any], chunk_size
+    ) -> Generator[List[Any], None, None]:
         buffer = [None] * chunk_size
         for i, data in enumerate(iterator):
             index = i % chunk_size

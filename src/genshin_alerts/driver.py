@@ -10,7 +10,12 @@ logger = structlog.get_logger()
 
 
 class Driver(object):
-    def __init__(self, fetcher: Fetcher, notifiers: Optional[Iterable[Notifier]] = None, delay: int = 10):
+    def __init__(
+        self,
+        fetcher: Fetcher,
+        notifiers: Optional[Iterable[Notifier]] = None,
+        delay: int = 10,
+    ):
         self.fetcher = fetcher
         self.notifiers = notifiers if notifiers is not None else []
         self.delay = delay
@@ -39,19 +44,26 @@ class Driver(object):
         logger.info("driver initialized")
         while True:
             gift_entries = await self.fetcher.fetch()
-            gift_entries = [gift_entry for gift_entry in gift_entries if not gift_entry.expired]
+            gift_entries = [
+                gift_entry for gift_entry in gift_entries if not gift_entry.expired
+            ]
             if len(gift_entries) == 0:
                 logger.info("no gift codes available")
                 return
 
-            line_details = [f"{gift_entry.rewards}: NA: **{gift_entry.na}** EU: **{gift_entry.eu}** SEA: **{gift_entry.sea}**" for gift_entry in gift_entries]
+            line_details = [
+                f"{gift_entry.rewards}: NA: **{gift_entry.na}** EU: **{gift_entry.eu}** SEA: **{gift_entry.sea}**"
+                for gift_entry in gift_entries
+            ]
             line_details = "\n- ".join(line_details)
             message = f"Redeem Gift Code here: https://genshin.mihoyo.com/en/gift\n- {line_details}"
 
             logger.info("sending message to notifiers")
             tasks = []
             for notifier in self.notifiers:
-                task = asyncio.create_task(notifier.notify(NotifierInput(method="channel", message=message)))
+                task = asyncio.create_task(
+                    notifier.notify(NotifierInput(method="channel", message=message))
+                )
                 tasks.append(task)
             await asyncio.gather(*tasks)
             logger.info("sent messages to all notifiers")
